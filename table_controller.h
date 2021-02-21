@@ -25,8 +25,9 @@ public:
   HighlightCell * reusableCell(int index) override;
   int reusableCellCount() const override;
   void willDisplayCellAtLocation(HighlightCell * cell, int i, int j) override;
+  void tableViewDidChangeSelection(SelectableTableView * t, int previousSelectedCellX, int previousSelectedCellY, bool withinTemporarySelection) override;
 private:
-  int numberOfIcons() const;
+  SelectableTableViewDataSource * selectionDataSource() const;
   class ContentView : public View {
   public:
     ContentView(TableController * controller, SelectableTableViewDataSource * selectionDataSource);
@@ -45,6 +46,7 @@ private:
   static constexpr int k_maxNumberOfCells = 180;
   static constexpr int k_cellHeight = 17;
   static constexpr int k_cellWidth = 17;
+  int m_position;
   ContentView m_view;
   AtomicCell m_cells[k_maxNumberOfCells];
 };

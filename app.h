@@ -21,6 +21,12 @@ public:
     App * unpack(Container * container) override;
     Descriptor * descriptor() override;
   };
+  static App * app() {
+    return static_cast<App *>(Container::activeApp());
+  }
+  Snapshot * snapshot() const {
+    return static_cast<Snapshot *>(::App::snapshot());
+  }
 private:
   App(Snapshot * snapshot);
   TableController m_controller;

@@ -14,7 +14,6 @@ TableController::ContentView::ContentView(TableController * controller, Selectab
   m_selectableTableView.setVerticalCellOverlap(0);
   m_selectableTableView.setMargins(k_sideMargin, k_sideMargin, k_sideMargin, k_sideMargin);
   m_selectableTableView.setBackgroundColor(KDColorWhite);
-  static_cast<ScrollView::BarDecorator *>(m_selectableTableView.decorator())->verticalBar()->setMargin(k_indicatorMargin);
 }
 
 SelectableTableView * TableController::ContentView::selectableTableView() {
@@ -53,11 +52,29 @@ TableController::TableController(Responder * parentResponder, SelectableTableVie
 }
 
 bool TableController::handleEvent(Ion::Events::Event event) {
+  if (event == Ion::Events::Right && selectionDataSource()->selectedRow() < numberOfRows() - 1) {
+    return m_view.selectableTableView()->selectCellAtLocation(0, selectionDataSource()->selectedRow() + 1);
+  }
+  if (event == Ion::Events::Left && selectionDataSource()->selectedRow() > 0) {
+    return m_view.selectableTableView()->selectCellAtLocation(numberOfColumns() - 1, selectionDataSource()->selectedRow() - 1);
+  }
   return false;
 }
 
 void TableController::didBecomeFirstResponder() {
+  if (selectionDataSource()->selectedRow() == -1) {
+    selectionDataSource()->selectCellAtLocation(0, 0);
+  }
   Container::activeApp()->setFirstResponder(m_view.selectableTableView());
+}
+
+void TableController::tableViewDidChangeSelection(SelectableTableView * t, int previousSelectedCellX, int previousSelectedCellY, bool withinTemporarySelection) {
+  int x = t->selectedColumn();
+  int y = t->selectedRow();
+  //std::cout << previousSelectedCellX << " " << previousSelectedCellY << " " << x << " " << y << std::endl;
+  // FIXME
+  // The selection is totally broken :/
+  m_cells[0].reloadCell(); // Some hack to redraw the view
 }
 
 View * TableController::view() {
@@ -104,6 +121,10 @@ void TableController::willDisplayCellAtLocation(HighlightCell * cell, int i, int
     }
   }
   c->setVisible(false);
+}
+
+SelectableTableViewDataSource * TableController::selectionDataSource() const {
+  return App::app()->snapshot();
 }
 
 }

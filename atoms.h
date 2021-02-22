@@ -1,8 +1,6 @@
 #ifndef APPS_ATOM_DEFS_H
 #define APPS_ATOM_DEFS_H
 
-#define ATOM_NUMS 118
-
 #include "apps/i18n.h"
 
 enum AtomType : uint8_t {
@@ -31,7 +29,7 @@ struct AtomDef {
   double electroneg;
 };
 
-const AtomDef atomsdefs[ATOM_NUMS] = {
+const AtomDef atomsdefs[] = {
   {  1,  0,  0, REACTIVE_NONMETAL       , I18n::Message::AtomName_Hydrogen     , "H"   ,   0, 1.00794     , 2.2   },
   {  2, 17,  0, NOBLE_GAS               , I18n::Message::AtomName_Helium       , "He"  ,   2, 4.002602    , -1    },
   

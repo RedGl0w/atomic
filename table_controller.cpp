@@ -62,7 +62,6 @@ bool TableController::handleEvent(Ion::Events::Event event) {
     selectCell(atom.x,atom.y);
     return true;
   }
-  // FIXME One keypress after Up/Down with Left/Right, this is glitchy
   if (event == Ion::Events::Up) {
     int row = selectionDataSource()->selectedRow();
     int column = selectionDataSource()->selectedColumn();
@@ -70,8 +69,10 @@ bool TableController::handleEvent(Ion::Events::Event event) {
       if (row == 8) {
         row--;
       }
-      for(AtomDef atom : atomsdefs) {
+      for(int i = 0; i < (sizeof(atomsdefs) / sizeof(AtomDef)); i++) {
+        AtomDef atom = atomsdefs[i];
         if (atom.x == column && atom.y == row-1) {
+          m_cursor = i;
           selectCell(atom.x, atom.y);
           return true;
         }
@@ -84,8 +85,10 @@ bool TableController::handleEvent(Ion::Events::Event event) {
     int column = selectionDataSource()->selectedColumn();
     if (row < 9) {
       if (row == 6) {row++;}
-      for(AtomDef atom : atomsdefs) {
+      for(int i = 0; i < (sizeof(atomsdefs) / sizeof(AtomDef)); i++) {
+        AtomDef atom = atomsdefs[i];
         if (atom.x == column && atom.y == row+1) {
+          m_cursor = i;
           selectCell(atom.x, atom.y);
           return true;
         }

@@ -52,29 +52,53 @@ TableController::TableController(Responder * parentResponder, SelectableTableVie
 }
 
 bool TableController::handleEvent(Ion::Events::Event event) {
-  if (event == Ion::Events::Right && selectionDataSource()->selectedRow() < numberOfRows() - 1) {
-    return m_view.selectableTableView()->selectCellAtLocation(0, selectionDataSource()->selectedRow() + 1);
+  if (event == Ion::Events::Right && m_cursor < (sizeof(atomsdefs) / sizeof(AtomDef) - 1)) {
+    AtomDef atom = atomsdefs[++m_cursor];
+    selectCell(atom.x,atom.y);
+    return true;
   }
-  if (event == Ion::Events::Left && selectionDataSource()->selectedRow() > 0) {
-    return m_view.selectableTableView()->selectCellAtLocation(numberOfColumns() - 1, selectionDataSource()->selectedRow() - 1);
+  if (event == Ion::Events::Left && m_cursor > 0) {
+    AtomDef atom = atomsdefs[--m_cursor];
+    selectCell(atom.x,atom.y);
+    return true;
+  }
+  // FIXME One keypress after Up/Down with Left/Right, this is glitchy
+  if (event == Ion::Events::Up) {
+    int row = selectionDataSource()->selectedRow();
+    int column = selectionDataSource()->selectedColumn();
+    if (row > 0) {
+      if (row == 8) {
+        row--;
+      }
+      for(AtomDef atom : atomsdefs) {
+        if (atom.x == column && atom.y == row-1) {
+          selectCell(atom.x, atom.y);
+          return true;
+        }
+      }
+    }
+    return true;
+  }
+  if (event == Ion::Events::Down) {
+    int row = selectionDataSource()->selectedRow();
+    int column = selectionDataSource()->selectedColumn();
+    if (row < 9) {
+      if (row == 6) {row++;}
+      for(AtomDef atom : atomsdefs) {
+        if (atom.x == column && atom.y == row+1) {
+          selectCell(atom.x, atom.y);
+          return true;
+        }
+      }
+    }
   }
   return false;
 }
 
 void TableController::didBecomeFirstResponder() {
   if (selectionDataSource()->selectedRow() == -1) {
-    selectionDataSource()->selectCellAtLocation(0, 0);
+    selectCell(0,0);
   }
-  Container::activeApp()->setFirstResponder(m_view.selectableTableView());
-}
-
-void TableController::tableViewDidChangeSelection(SelectableTableView * t, int previousSelectedCellX, int previousSelectedCellY, bool withinTemporarySelection) {
-  int x = t->selectedColumn();
-  int y = t->selectedRow();
-  //std::cout << previousSelectedCellX << " " << previousSelectedCellY << " " << x << " " << y << std::endl;
-  // FIXME
-  // The selection is totally broken :/
-  m_cells[0].reloadCell(); // Some hack to redraw the view
 }
 
 View * TableController::view() {
@@ -108,13 +132,8 @@ int TableController::reusableCellCount() const {
 
 void TableController::willDisplayCellAtLocation(HighlightCell * cell, int i, int j) {
   AtomicCell* c = static_cast<AtomicCell*>(cell);
-  if(j == 7) {
-    c->setVisible(false); // Row 7 is empty
-    return;
-  }
-  int y = (j < 7) ? j : j-1; // But it atomsDef row 7 is not empty
   for(AtomDef atom : atomsdefs) {
-    if(atom.x == i && atom.y == y) {
+    if(atom.x == i && atom.y == j) {
       c->setVisible(true);
       c->setAtom(atom);
       return;
@@ -125,6 +144,10 @@ void TableController::willDisplayCellAtLocation(HighlightCell * cell, int i, int
 
 SelectableTableViewDataSource * TableController::selectionDataSource() const {
   return App::app()->snapshot();
+}
+
+void TableController::selectCell(int i, int j) {
+  m_view.selectableTableView()->selectCellAtLocation(i,j,false);
 }
 
 }

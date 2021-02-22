@@ -8,6 +8,6 @@ apps_src += $(addprefix apps/atomic/,\
 	atom_info.cpp \
 )
 
-i18n_files += $(call i18n_without_universal_for,atomic/base) $(call i18n_without_universal_for,atomic/atomsName)
+i18n_files += $(call i18n_with_universal_for,atomic/base) $(call i18n_with_universal_for,atomic/atomsName)
 
 $(eval $(call depends_on_image,apps/atomic/app.cpp,apps/atomic/atomic_icon.png))

@@ -29,8 +29,12 @@ KDColor AtomicCell::colorForType(AtomType type) const {
 
 
 void AtomicCell::drawRect(KDContext * ctx, KDRect rect) const {
+  KDColor highlightColor = KDColor::RGB24(0x313431);
   if(m_visible) {
     KDColor color = colorForType(m_atom.type);
+    if (isHighlighted()) {
+      color = KDColor::blend(color, KDColorBlack, 0x7F);
+    }
     ctx->fillRect(rect, color);
     ctx->strokeRect(bounds(), KDColorBlack);
     KDPoint textPosition(bounds().topLeft().x() + 2, bounds().topLeft().y() + 2);
@@ -39,11 +43,8 @@ void AtomicCell::drawRect(KDContext * ctx, KDRect rect) const {
     ctx->fillRect(rect, KDColorWhite);
   }
   if (isHighlighted()) {
-    KDColor highlightColor = KDColor::RGB24(0x313431);
-    KDRect rect1(bounds().topLeft().x() + 1, bounds().topLeft().y() + 1, bounds().width() - 2, bounds().height() - 2);
-    KDRect rect2(bounds().topLeft().x() + 2, bounds().topLeft().y() + 2, bounds().width() - 3, bounds().height() - 3);
-    ctx->strokeRect(rect1, highlightColor);
-    ctx->strokeRect(rect2, highlightColor);
+    KDRect rect(bounds().topLeft().x() + 1, bounds().topLeft().y() + 1, bounds().width() - 2, bounds().height() - 2);
+    ctx->strokeRect(rect, highlightColor);
   }
 }
 

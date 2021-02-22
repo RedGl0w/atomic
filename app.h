@@ -30,6 +30,7 @@ public:
 private:
   App(Snapshot * snapshot);
   TableController m_controller;
+  StackViewController m_stackViewController;
 };
 
 }

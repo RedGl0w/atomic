@@ -160,4 +160,8 @@ void TableController::setSelection(AtomDef atom) {
   m_view.setAtom(atom);
 }
 
+StackViewController * TableController::stackController() const {
+  return (StackViewController *)parentResponder();
+}
+
 }

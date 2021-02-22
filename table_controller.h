@@ -30,6 +30,7 @@ public:
 private:
   SelectableTableViewDataSource * selectionDataSource() const;
   void setSelection(AtomDef atom);
+  StackViewController * stackController() const;
   class ContentView : public View {
   public:
     ContentView(TableController * controller, SelectableTableViewDataSource * selectionDataSource);

@@ -4,6 +4,7 @@
 #include <escher.h>
 #include "../shared/ok_view.h"
 #include "atomic_cell.h"
+#include "atom_info.h"
 #include "atoms.h"
 
 namespace Atomic {
@@ -27,18 +28,20 @@ public:
   void willDisplayCellAtLocation(HighlightCell * cell, int i, int j) override;
 private:
   SelectableTableViewDataSource * selectionDataSource() const;
-  void selectCell(int i, int j);
+  void setSelection(AtomDef atom);
   class ContentView : public View {
   public:
     ContentView(TableController * controller, SelectableTableViewDataSource * selectionDataSource);
     SelectableTableView * selectableTableView();
     void drawRect(KDContext * ctx, KDRect rect) const override;
+    void setAtom(AtomDef atom) { m_info.setAtom(atom); }
   private:
     int numberOfSubviews() const override;
     View * subviewAtIndex(int index) override;
     void layoutSubviews(bool force = false) override;
     SelectableTableView m_selectableTableView;
     Shared::OkView m_ok;
+    atomInfo m_info;
   };
   static constexpr KDCoordinate k_sideMargin = 6;
   static constexpr KDCoordinate k_indicatorMargin = 61;

@@ -39,10 +39,11 @@ void AtomicCell::drawRect(KDContext * ctx, KDRect rect) const {
     ctx->fillRect(rect, KDColorWhite);
   }
   if (isHighlighted()) {
+    KDColor highlightColor = KDColor::RGB24(0x313431);
     KDRect rect1(bounds().topLeft().x() + 1, bounds().topLeft().y() + 1, bounds().width() - 2, bounds().height() - 2);
     KDRect rect2(bounds().topLeft().x() + 2, bounds().topLeft().y() + 2, bounds().width() - 3, bounds().height() - 3);
-    ctx->strokeRect(rect1, KDColorBlack);
-    ctx->strokeRect(rect2, KDColorBlack);
+    ctx->strokeRect(rect1, highlightColor);
+    ctx->strokeRect(rect2, highlightColor);
   }
 }
 

@@ -25,7 +25,7 @@ void TableController::ContentView::drawRect(KDContext * ctx, KDRect rect) const 
 }
 
 int TableController::ContentView::numberOfSubviews() const {
-  return 3;
+  return 4;
 }
 
 View * TableController::ContentView::subviewAtIndex(int index) {
@@ -36,6 +36,8 @@ View * TableController::ContentView::subviewAtIndex(int index) {
       return &m_ok;
     case 2:
       return &m_info;
+    case 3:
+      return &m_lines;
     default:
       assert(false);
       return nullptr;
@@ -46,6 +48,7 @@ void TableController::ContentView::layoutSubviews(bool force) {
   m_selectableTableView.setFrame(bounds(), force);
   m_ok.setFrame(KDRect(295,200, m_ok.minimalSizeForOptimalDisplay()), force);
   m_info.setFrame(KDRect(KDPoint(48,15),m_info.minimalSizeForOptimalDisplay()), force);
+  m_lines.setFrame(KDRect(KDPoint(48, 99), m_lines.minimalSizeForOptimalDisplay()), force);
 }
 
 TableController::TableController(Responder * parentResponder, SelectableTableViewDataSource * selectionDataSource) :

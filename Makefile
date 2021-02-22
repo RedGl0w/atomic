@@ -4,6 +4,7 @@ app_headers += apps/atomic/app.h
 apps_src += $(addprefix apps/atomic/,\
   app.cpp \
 	table_controller.cpp \
+	table_lines_view.cpp \
 	atomic_cell.cpp \
 	atom_info.cpp \
 )

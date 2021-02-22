@@ -5,6 +5,7 @@
 #include "../shared/ok_view.h"
 #include "atomic_cell.h"
 #include "atom_info.h"
+#include "table_lines_view.h"
 #include "atoms.h"
 
 namespace Atomic {
@@ -42,6 +43,7 @@ private:
     SelectableTableView m_selectableTableView;
     Shared::OkView m_ok;
     atomInfo m_info;
+    tableLinesView m_lines;
   };
   static constexpr KDCoordinate k_sideMargin = 6;
   static constexpr KDCoordinate k_indicatorMargin = 61;

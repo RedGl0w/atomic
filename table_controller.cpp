@@ -103,6 +103,7 @@ bool TableController::handleEvent(Ion::Events::Event event) {
     }
   }
   if (event == Ion::Events::OK) {
+    m_list.setAtom(atomsdefs[m_cursor]);
     stackController()->push(static_cast<ViewController*>(&m_list));
     return true;
   }

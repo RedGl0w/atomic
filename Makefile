@@ -7,6 +7,7 @@ apps_src += $(addprefix apps/atomic/,\
 	table_lines_view.cpp \
 	atomic_cell.cpp \
 	atom_info.cpp \
+	list_controller.cpp \
 )
 
 i18n_files += $(call i18n_with_universal_for,atomic/base) $(call i18n_with_universal_for,atomic/atomsName)

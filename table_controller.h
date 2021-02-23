@@ -7,6 +7,7 @@
 #include "atom_info.h"
 #include "table_lines_view.h"
 #include "atoms.h"
+#include "list_controller.h"
 
 namespace Atomic {
 
@@ -56,6 +57,7 @@ private:
   ContentView m_view;
   AtomicCell m_cells[k_maxNumberOfCells];
   int m_cursor;
+  ListController m_list;
 };
 
 }

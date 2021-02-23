@@ -1,6 +1,7 @@
 #include "table_controller.h"
 #include "app.h"
 #include "../apps_container.h"
+#include <iostream>
 
 extern "C" {
 #include <assert.h>
@@ -53,12 +54,13 @@ void TableController::ContentView::layoutSubviews(bool force) {
 
 TableController::TableController(Responder * parentResponder, SelectableTableViewDataSource * selectionDataSource) :
   ViewController(parentResponder),
-  m_view(this, selectionDataSource)
+  m_view(this, selectionDataSource),
+  m_list(this)
 {
 }
 
 bool TableController::handleEvent(Ion::Events::Event event) {
-  if (event == Ion::Events::Right && m_cursor < (sizeof(atomsdefs) / sizeof(AtomDef) - 1)) {
+  if (event == Ion::Events::Right && m_cursor < static_cast<int>(sizeof(atomsdefs) / sizeof(AtomDef) - 1)) {
     AtomDef atom = atomsdefs[++m_cursor];
     setSelection(atom);
     return true;
@@ -75,7 +77,7 @@ bool TableController::handleEvent(Ion::Events::Event event) {
       if (row == 8) {
         row--;
       }
-      for(int i = 0; i < (sizeof(atomsdefs) / sizeof(AtomDef)); i++) {
+      for(size_t i = 0; i < (sizeof(atomsdefs) / sizeof(AtomDef)); i++) {
         AtomDef atom = atomsdefs[i];
         if (atom.x == column && atom.y == row-1) {
           m_cursor = i;
@@ -91,7 +93,7 @@ bool TableController::handleEvent(Ion::Events::Event event) {
     int column = selectionDataSource()->selectedColumn();
     if (row < 9) {
       if (row == 6) {row++;}
-      for(int i = 0; i < (sizeof(atomsdefs) / sizeof(AtomDef)); i++) {
+      for(size_t i = 0; i < (sizeof(atomsdefs) / sizeof(AtomDef)); i++) {
         AtomDef atom = atomsdefs[i];
         if (atom.x == column && atom.y == row+1) {
           m_cursor = i;
@@ -100,6 +102,11 @@ bool TableController::handleEvent(Ion::Events::Event event) {
         }
       }
     }
+  }
+  if (event == Ion::Events::OK) {
+    stackController()->push(static_cast<ViewController*>(&m_list));
+    std::cout << stackController()->depth() << std::endl;
+    return true;
   }
   return false;
 }

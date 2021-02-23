@@ -1,7 +1,6 @@
 #include "table_controller.h"
 #include "app.h"
 #include "../apps_container.h"
-#include <iostream>
 
 extern "C" {
 #include <assert.h>
@@ -105,7 +104,6 @@ bool TableController::handleEvent(Ion::Events::Event event) {
   }
   if (event == Ion::Events::OK) {
     stackController()->push(static_cast<ViewController*>(&m_list));
-    std::cout << stackController()->depth() << std::endl;
     return true;
   }
   return false;

@@ -32,19 +32,16 @@ void AtomicCell::drawRect(KDContext * ctx, KDRect rect) const {
   KDColor highlightColor = KDColor::RGB24(0x313431);
   if(m_visible) {
     KDColor color = colorForType(m_atom.type);
-    if (isHighlighted()) {
-      color = KDColor::blend(color, KDColorBlack, 0x7F);
-    }
     ctx->fillRect(rect, color);
-    ctx->strokeRect(bounds(), KDColorBlack);
     KDPoint textPosition(bounds().topLeft().x() + 2, bounds().topLeft().y() + 2);
     ctx->drawString(m_atom.symbol, textPosition, KDFont::SmallFont, KDColorBlack, color);
+    if(isHighlighted()) {
+      ctx->strokeRect(bounds(), KDColorBlack);
+      KDRect rect2(bounds().topLeft().x() + 1, bounds().topLeft().y() + 1, bounds().width() - 2, bounds().height() - 2);
+      ctx->strokeRect(rect2, KDColorBlack);
+    }
   } else {
     ctx->fillRect(rect, KDColorWhite);
-  }
-  if (isHighlighted()) {
-    KDRect rect(bounds().topLeft().x() + 1, bounds().topLeft().y() + 1, bounds().width() - 2, bounds().height() - 2);
-    ctx->strokeRect(rect, highlightColor);
   }
 }
 

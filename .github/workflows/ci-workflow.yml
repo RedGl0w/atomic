@@ -14,7 +14,7 @@ jobs:
           ref: 'master'
       - name: Patch apps_layout
         run: |
-          cat > apps/apps_layout.csv << EOF
+          cat > apps/home/apps_layout.csv << EOF
           Default,calculation,atomic,graph,code,statistics,probability,solver,sequence,regression,settings
           HidePython,calculation,atomic,graph,solver,statistics,probability,regression,sequence,code,settings
           EOF

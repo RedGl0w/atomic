@@ -7,7 +7,7 @@
 
 namespace Atomic {
 
-class ListController : public ViewController, public ListViewDataSource, public SelectableTableViewDataSource {
+class ListController : public StackViewController, public ListViewDataSource, public SelectableTableViewDataSource {
 public:
   ListController(Responder * parentResponder);
 
@@ -20,7 +20,6 @@ public:
   int reusableCellCount(int type) override;
   int typeAtLocation(int i, int j) override;
   void willDisplayCellForIndex(HighlightCell * cell, int index) override;
-  void viewWillAppear() override;
 
   const char * title() override { return I18n::translate(m_atom.name); }
 
@@ -29,13 +28,25 @@ public:
   void setAtom(AtomDef atom) { m_atom = atom; }
 
 private:
-  StackViewController * stackController() const;
+  class InnerView : public ViewController {
+  public:
+    InnerView(ListController * dataSource);
+    const char * title() override { return I18n::translate(m_atom.name); }
+    View * view() override { return &m_selectableTableView; }
+    void didBecomeFirstResponder() override;
+    SelectableTableView * selectableTableView() { return &m_selectableTableView; }
+    void setAtom(AtomDef atom) { m_atom = atom; }
+  private:
+    SelectableTableView m_selectableTableView;
+    AtomDef m_atom;
+  };
+
   constexpr static int k_numberOfCellsWithBuffer = 2;
   MessageTableCellWithBuffer m_cellsWithBuffer[k_numberOfCellsWithBuffer];
   constexpr static int k_numberOfCellsWithExpression = 2;
   MessageTableCellWithExpression m_cellsWithExpression[k_numberOfCellsWithExpression];
   constexpr static int k_numberOfRow = k_numberOfCellsWithBuffer + k_numberOfCellsWithExpression;
-  SelectableTableView m_selectableTableView;
+  InnerView m_innerView;
   AtomDef m_atom;
 };
 

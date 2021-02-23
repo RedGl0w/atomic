@@ -4,9 +4,22 @@
 
 namespace Atomic {
 
+ListController::InnerView::InnerView(ListController * dataSource) :
+  ViewController(dataSource),
+  m_selectableTableView(this, dataSource, dataSource, nullptr)
+{
+  m_selectableTableView.setMargins(0);
+  m_selectableTableView.setDecoratorType(ScrollView::Decorator::Type::None);
+  m_selectableTableView.setMargins(5,5,5,5);
+}
+
+void ListController::InnerView::didBecomeFirstResponder() {
+  m_selectableTableView.reloadData();
+}
+
 ListController::ListController(Responder * parentResponder) :
-  ViewController(parentResponder),
-  m_selectableTableView(this)
+  StackViewController(parentResponder, &m_innerView, Palette::PurpleBright, Palette::PurpleDark),
+  m_innerView(this)
 {
   for (int i = 0; i < k_numberOfCellsWithBuffer; i++) {
     m_cellsWithBuffer[i].setMessageFont(KDFont::LargeFont);
@@ -20,15 +33,11 @@ bool ListController::handleEvent(Ion::Events::Event event) {
   return false;
 }
 
-View * ListController::view() {
-  return &m_selectableTableView;
-}
-
 void ListController::didBecomeFirstResponder() {
   if (selectedRow() < 0) {
     selectCellAtLocation(0, 0);
   }
-  Container::activeApp()->setFirstResponder(&m_selectableTableView);
+  Container::activeApp()->setFirstResponder(&m_innerView);
 }
 
 int ListController::numberOfRows() const {
@@ -36,7 +45,7 @@ int ListController::numberOfRows() const {
 }
 
 KDCoordinate ListController::rowHeight(int j) {
-  return Metric::ParameterCellHeight;
+  return 25;
 }
 
 KDCoordinate ListController::cumulatedHeightFromIndex(int j) {
@@ -105,15 +114,6 @@ void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
       return;
     }
   }
-}
-
-void ListController::viewWillAppear() {
-  ViewController::viewWillAppear();
-  m_selectableTableView.reloadData();
-}
-
-StackViewController * ListController::stackController() const {
-  return (StackViewController *)parentResponder();
 }
 
 }

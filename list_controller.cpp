@@ -1,4 +1,6 @@
 #include "list_controller.h"
+#include <poincare_layouts.h>
+#include <poincare_nodes.h>
 
 namespace Atomic {
 
@@ -6,8 +8,11 @@ ListController::ListController(Responder * parentResponder) :
   ViewController(parentResponder),
   m_selectableTableView(this)
 {
-  for (int i = 0; i < k_numberOfRow; i++) {
-    m_cells[i].setMessageFont(KDFont::LargeFont);
+  for (int i = 0; i < k_numberOfCellsWithBuffer; i++) {
+    m_cellsWithBuffer[i].setMessageFont(KDFont::LargeFont);
+  }
+  for (int i = 0; i < k_numberOfCellsWithExpression; i++) {
+    m_cellsWithExpression[i].setMessageFont(KDFont::LargeFont);
   }
 }
 
@@ -40,8 +45,22 @@ KDCoordinate ListController::cumulatedHeightFromIndex(int j) {
 }
 
 HighlightCell * ListController::reusableCell(int index, int type) {
-  assert(index == 0 && type == 0);
-  return &m_cells[index];
+  assert(index < k_numberOfRow);
+  switch (type) {
+    case 0:
+      {
+        return &m_cellsWithBuffer[index];
+      }
+    case 1:
+      {
+        return &m_cellsWithExpression[index];
+      }
+    default:
+      {
+        assert(false);
+        return nullptr;
+      }
+  }
 }
 
 int ListController::reusableCellCount(int type) {
@@ -50,15 +69,40 @@ int ListController::reusableCellCount(int type) {
 }
 
 int ListController::typeAtLocation(int i, int j) {
-  return 0;
+  if (j < k_numberOfCellsWithBuffer) {
+    return 0;
+  } else {
+    return 1;
+  }
 }
 
 void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
   switch (index) {
     case 0: {
-      MessageTableCellWithMessage * myCell = (MessageTableCellWithMessage *)cell;
+      MessageTableCellWithBuffer * myCell = (MessageTableCellWithBuffer *)cell;
       myCell->setMessage(I18n::Message::AtomName);
-      myCell->setAccessoryMessage(m_atom.name);
+      myCell->setAccessoryText(I18n::translate(m_atom.name)); // FIXME We shouldn't use here an I18n::translate
+      myCell->setAccessoryFont(KDFont::SmallFont);
+      return;
+    }
+    case 1: {
+      MessageTableCellWithBuffer * myCell = (MessageTableCellWithBuffer *)cell;
+      myCell->setMessage(I18n::Message::AtomSymbol);
+      myCell->setAccessoryText(m_atom.symbol);
+      myCell->setAccessoryFont(KDFont::SmallFont);
+      return;
+    }
+    case 2: {
+      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      myCell->setMessage(I18n::Message::AtomNum);
+      myCell->setLayout(Poincare::Integer(m_atom.num).createLayout());
+      return;
+    }
+    case 3: {
+      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      myCell->setMessage(I18n::Message::AtomNeutrons);
+      myCell->setLayout(Poincare::Integer(m_atom.neutrons).createLayout());
+      return;
     }
   }
 }

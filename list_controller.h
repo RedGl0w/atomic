@@ -29,9 +29,12 @@ public:
   void setAtom(AtomDef atom) { m_atom = atom; }
 
 private:
-  constexpr static int k_numberOfRow = 1;
   StackViewController * stackController() const;
-  MessageTableCellWithMessage m_cells[k_numberOfRow];
+  constexpr static int k_numberOfCellsWithBuffer = 2;
+  MessageTableCellWithBuffer m_cellsWithBuffer[k_numberOfCellsWithBuffer];
+  constexpr static int k_numberOfCellsWithExpression = 2;
+  MessageTableCellWithExpression m_cellsWithExpression[k_numberOfCellsWithExpression];
+  constexpr static int k_numberOfRow = k_numberOfCellsWithBuffer + k_numberOfCellsWithExpression;
   SelectableTableView m_selectableTableView;
   AtomDef m_atom;
 };

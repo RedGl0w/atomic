@@ -48,6 +48,9 @@ KDCoordinate ListController::rowHeight(int j) {
   if (j == 0) {
     return k_atomicCellRowHeight;
   }
+  if (j == 7) {
+    return 35;
+  }
   return k_classicalRowHeight;
 }
 
@@ -148,6 +151,32 @@ void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
       MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
       myCell->setMessage(I18n::Message::AtomElectroneg);
       myCell->setLayout(Poincare::FloatNode<double>(m_atom.electroneg).createLayout(Poincare::Preferences::PrintFloatMode::Decimal, 5));
+      return;
+    }
+    case 7: {
+      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      myCell->setMessage(I18n::Message::AtomNum);
+      Poincare::Layout layouts[6];
+      for(int i = 0; i < 6; i++) {
+        layouts[i] = Poincare::Layout();
+      }
+      if (m_atom.y > 0) {
+        char previousAtom[5] = {'[', ' ', ' ', ']', '\0'};
+        for (AtomDef atom : atomsdefs) {
+          if (atom.y == m_atom.y - 1 && atom.x == 17) {
+            memcpy(&previousAtom[1], atom.symbol, 2);
+          }
+        };
+        layouts[0] = Poincare::LayoutHelper::String(previousAtom, strlen(previousAtom));
+      }
+      Poincare::HorizontalLayout result = Poincare::HorizontalLayout::Builder();
+      for(int i = 0; i < 5; i++) { // FIXME It should be 6
+        if(layouts[i].isUninitialized()) {
+          break;
+        }
+        result.addChildAtIndex(layouts[i], i, i, nullptr);
+      }
+      myCell->setLayout(result);
       return;
     }
     default: {

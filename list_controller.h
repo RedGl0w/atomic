@@ -44,7 +44,7 @@ private:
   ListAtomicCell m_atomicCell;
   constexpr static int k_numberOfCellsWithBuffer = 2;
   MessageTableCellWithBuffer m_cellsWithBuffer[k_numberOfCellsWithBuffer];
-  constexpr static int k_numberOfCellsWithExpression = 4;
+  constexpr static int k_numberOfCellsWithExpression = 5;
   MessageTableCellWithExpression m_cellsWithExpression[k_numberOfCellsWithExpression];
   constexpr static int k_numberOfRow = 1 + k_numberOfCellsWithBuffer + k_numberOfCellsWithExpression;
   InnerView m_innerView;

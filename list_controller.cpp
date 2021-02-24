@@ -1,6 +1,7 @@
 #include "list_controller.h"
 #include <poincare_layouts.h>
 #include <poincare_nodes.h>
+#include <poincare/float.h>
 
 namespace Atomic {
 
@@ -135,6 +136,18 @@ void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
       myCell->setMessage(I18n::Message::AtomTypes);
       myCell->setAccessoryText(I18n::translate(AtomicI18nForType[static_cast<int>(m_atom.type)]));
       myCell->setAccessoryFont(KDFont::SmallFont);
+      return;
+    }
+    case 5: {
+      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      myCell->setMessage(I18n::Message::AtomMass);
+      myCell->setLayout(Poincare::FloatNode<double>(m_atom.mass).createLayout(Poincare::Preferences::PrintFloatMode::Decimal, 7));
+      return;
+    }
+    case 6: {
+      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      myCell->setMessage(I18n::Message::AtomElectroneg);
+      myCell->setLayout(Poincare::FloatNode<double>(m_atom.electroneg).createLayout(Poincare::Preferences::PrintFloatMode::Decimal, 5));
       return;
     }
     default: {

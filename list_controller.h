@@ -4,16 +4,16 @@
 #include <escher.h>
 #include <apps/i18n.h>
 #include "atoms.h"
+#include "list_atomic_cell.h"
 
 namespace Atomic {
 
-class ListController : public StackViewController, public ListViewDataSource, public SelectableTableViewDataSource {
+class ListController : public StackViewController, public ListViewDataSource, public SelectableTableViewDataSource, public SelectableTableViewDelegate {
 public:
   ListController(Responder * parentResponder);
   void didBecomeFirstResponder() override;
   int numberOfRows() const override;
   KDCoordinate rowHeight(int j) override;
-  KDCoordinate cumulatedHeightFromIndex(int j) override;
   HighlightCell * reusableCell(int index, int type) override;
   int reusableCellCount(int type) override;
   int typeAtLocation(int i, int j) override;
@@ -21,6 +21,8 @@ public:
   bool handleEvent(Ion::Events::Event event) override;
 
   void setAtom(AtomDef atom) { m_atom = atom; m_innerView.setAtom(atom); }
+
+  void tableViewDidChangeSelection(SelectableTableView * t, int previousSelectedCellX, int previousSelectedCellY, bool withinTemporarySelection) override;
 
 private:
   class InnerView : public ViewController {
@@ -36,11 +38,15 @@ private:
     AtomDef m_atom;
   };
 
+  constexpr static int k_atomicCellRowHeight = 100;
+  constexpr static int k_classicalRowHeight = 25;
+
+  ListAtomicCell m_atomicCell;
   constexpr static int k_numberOfCellsWithBuffer = 1;
   MessageTableCellWithBuffer m_cellsWithBuffer[k_numberOfCellsWithBuffer];
   constexpr static int k_numberOfCellsWithExpression = 2;
   MessageTableCellWithExpression m_cellsWithExpression[k_numberOfCellsWithExpression];
-  constexpr static int k_numberOfRow = k_numberOfCellsWithBuffer + k_numberOfCellsWithExpression;
+  constexpr static int k_numberOfRow = 1 + k_numberOfCellsWithBuffer + k_numberOfCellsWithExpression;
   InnerView m_innerView;
   AtomDef m_atom;
 };

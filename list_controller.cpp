@@ -6,7 +6,7 @@ namespace Atomic {
 
 ListController::InnerView::InnerView(ListController * dataSource) :
   ViewController(dataSource),
-  m_selectableTableView(this, dataSource, dataSource, nullptr)
+  m_selectableTableView(this, dataSource, dataSource, dataSource)
 {
   m_selectableTableView.setMargins(0);
   m_selectableTableView.setDecoratorType(ScrollView::Decorator::Type::None);
@@ -15,6 +15,7 @@ ListController::InnerView::InnerView(ListController * dataSource) :
 
 void ListController::InnerView::didBecomeFirstResponder() {
   m_selectableTableView.reloadData();
+  m_selectableTableView.selectCellAtLocation(0,1);
 }
 
 ListController::ListController(Responder * parentResponder) :
@@ -43,22 +44,26 @@ int ListController::numberOfRows() const {
 }
 
 KDCoordinate ListController::rowHeight(int j) {
-  return 25;
+  if (j == 0) {
+    return k_atomicCellRowHeight;
+  }
+  return k_classicalRowHeight;
 }
 
-KDCoordinate ListController::cumulatedHeightFromIndex(int j) {
-  KDCoordinate height = j * rowHeight(0);
-  return height;
-}
 
 HighlightCell * ListController::reusableCell(int index, int type) {
   assert(index < k_numberOfRow);
   switch (type) {
     case 0:
       {
-        return &m_cellsWithBuffer[index];
+        assert(index == 0);
+        return &m_atomicCell;
       }
     case 1:
+      {
+        return &m_cellsWithBuffer[index];
+      }
+    case 2:
       {
         return &m_cellsWithExpression[index];
       }
@@ -70,39 +75,62 @@ HighlightCell * ListController::reusableCell(int index, int type) {
   }
 }
 
+void ListController::tableViewDidChangeSelection(SelectableTableView * t, int previousSelectedCellX, int previousSelectedCellY, bool withinTemporarySelection) {
+  if (withinTemporarySelection) {
+    return;
+  }
+  // Forbid selecting ListAtomicCell
+  if (t->selectedRow() == 0) {
+    t->selectCellAtLocation(0, 1);
+  }
+  /* But scroll to the top when we select the first
+   * cell in order display the ListAtomicCell. */
+  if (t->selectedRow() == 1) {
+    t->scrollToCell(0, 0);
+  }
+}
+
 int ListController::reusableCellCount(int type) {
   assert(type == 0);
   return k_numberOfRow;
 }
 
 int ListController::typeAtLocation(int i, int j) {
-  if (j < k_numberOfCellsWithBuffer) {
+  if (j == 0) {
     return 0;
-  } else {
+  } else if ((j - 1) < k_numberOfCellsWithBuffer) {
     return 1;
+  } else {
+    return 2;
   }
 }
 
 void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
   switch (index) {
-    case 0: {
+    case 0 : {
+      return;
+    }
+    case 1: {
       MessageTableCellWithBuffer * myCell = (MessageTableCellWithBuffer *)cell;
       myCell->setMessage(I18n::Message::AtomSymbol);
       myCell->setAccessoryText(m_atom.symbol);
       myCell->setAccessoryFont(KDFont::SmallFont);
       return;
     }
-    case 1: {
+    case 2: {
       MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
       myCell->setMessage(I18n::Message::AtomNum);
       myCell->setLayout(Poincare::Integer(m_atom.num).createLayout());
       return;
     }
-    case 2: {
+    case 3: {
       MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
       myCell->setMessage(I18n::Message::AtomNeutrons);
       myCell->setLayout(Poincare::Integer(m_atom.neutrons).createLayout());
       return;
+    }
+    default: {
+      assert(false);
     }
   }
 }

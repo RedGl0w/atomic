@@ -17,6 +17,20 @@ enum AtomType : uint8_t {
   NOBLE_GAS = 10
 };
 
+const I18n::Message AtomicI18nForType[] {
+  I18n::Message::AtomTypeUNKNOWN,
+  I18n::Message::AtomTypeALKALIMETAL,
+  I18n::Message::AtomTypeALKALIEARTHMETAL,
+  I18n::Message::AtomTypeLANTHANIDE,
+  I18n::Message::AtomTypeACTINIDE,
+  I18n::Message::AtomTypeTRANSITIONMETAL,
+  I18n::Message::AtomTypePOSTTRANSITIONMETAL,
+  I18n::Message::AtomTypeMETALLOID,
+  I18n::Message::AtomTypeHALLOGEN,
+  I18n::Message::AtomTypeREACTIVENONMETAL,
+  I18n::Message::AtomTypeNOBLEGAS
+};
+
 struct AtomDef {
   uint8_t num;
   uint8_t x;

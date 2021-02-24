@@ -98,7 +98,7 @@ int ListController::reusableCellCount(int type) {
 int ListController::typeAtLocation(int i, int j) {
   if (j == 0) {
     return 0;
-  } else if ((j - 1) < k_numberOfCellsWithBuffer) {
+  } else if (j == 1 || j == 4) {
     return 1;
   } else {
     return 2;
@@ -108,6 +108,7 @@ int ListController::typeAtLocation(int i, int j) {
 void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
   switch (index) {
     case 0 : {
+      m_atomicCell.setAtom(m_atom);
       return;
     }
     case 1: {
@@ -127,6 +128,13 @@ void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
       MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
       myCell->setMessage(I18n::Message::AtomNeutrons);
       myCell->setLayout(Poincare::Integer(m_atom.neutrons).createLayout());
+      return;
+    }
+    case 4: {
+      MessageTableCellWithBuffer * myCell = (MessageTableCellWithBuffer *)cell;
+      myCell->setMessage(I18n::Message::AtomTypes);
+      myCell->setAccessoryText(I18n::translate(AtomicI18nForType[static_cast<int>(m_atom.type)]));
+      myCell->setAccessoryFont(KDFont::SmallFont);
       return;
     }
     default: {

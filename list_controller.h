@@ -38,11 +38,11 @@ private:
     AtomDef m_atom;
   };
 
-  constexpr static int k_atomicCellRowHeight = 100;
-  constexpr static int k_classicalRowHeight = 25;
+  constexpr static int k_atomicCellRowHeight = 110;
+  constexpr static int k_classicalRowHeight = 30;
 
   ListAtomicCell m_atomicCell;
-  constexpr static int k_numberOfCellsWithBuffer = 1;
+  constexpr static int k_numberOfCellsWithBuffer = 2;
   MessageTableCellWithBuffer m_cellsWithBuffer[k_numberOfCellsWithBuffer];
   constexpr static int k_numberOfCellsWithExpression = 2;
   MessageTableCellWithExpression m_cellsWithExpression[k_numberOfCellsWithExpression];

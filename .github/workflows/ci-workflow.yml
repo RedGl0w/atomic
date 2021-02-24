@@ -1,5 +1,9 @@
 name: Continuous integration
-on: [pull_request, push]
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron : "0 0 * * 1" #Run every mondays, to check if epsilon hasn't changed to much
 
 jobs:
   linux:

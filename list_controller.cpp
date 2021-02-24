@@ -10,7 +10,7 @@ ListController::InnerView::InnerView(ListController * dataSource) :
 {
   m_selectableTableView.setMargins(0);
   m_selectableTableView.setDecoratorType(ScrollView::Decorator::Type::None);
-  m_selectableTableView.setMargins(5,5,5,5);
+  m_selectableTableView.setMargins(0,0,0,0);
 }
 
 void ListController::InnerView::didBecomeFirstResponder() {

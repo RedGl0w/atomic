@@ -34,9 +34,7 @@ bool ListController::handleEvent(Ion::Events::Event event) {
 }
 
 void ListController::didBecomeFirstResponder() {
-  if (selectedRow() < 0) {
-    selectCellAtLocation(0, 0);
-  }
+  selectCellAtLocation(0, 0);
   Container::activeApp()->setFirstResponder(&m_innerView);
 }
 
@@ -89,25 +87,18 @@ void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
   switch (index) {
     case 0: {
       MessageTableCellWithBuffer * myCell = (MessageTableCellWithBuffer *)cell;
-      myCell->setMessage(I18n::Message::AtomName);
-      myCell->setAccessoryText(I18n::translate(m_atom.name)); // FIXME We shouldn't use here an I18n::translate
-      myCell->setAccessoryFont(KDFont::SmallFont);
-      return;
-    }
-    case 1: {
-      MessageTableCellWithBuffer * myCell = (MessageTableCellWithBuffer *)cell;
       myCell->setMessage(I18n::Message::AtomSymbol);
       myCell->setAccessoryText(m_atom.symbol);
       myCell->setAccessoryFont(KDFont::SmallFont);
       return;
     }
-    case 2: {
+    case 1: {
       MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
       myCell->setMessage(I18n::Message::AtomNum);
       myCell->setLayout(Poincare::Integer(m_atom.num).createLayout());
       return;
     }
-    case 3: {
+    case 2: {
       MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
       myCell->setMessage(I18n::Message::AtomNeutrons);
       myCell->setLayout(Poincare::Integer(m_atom.neutrons).createLayout());

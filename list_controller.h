@@ -10,8 +10,6 @@ namespace Atomic {
 class ListController : public StackViewController, public ListViewDataSource, public SelectableTableViewDataSource {
 public:
   ListController(Responder * parentResponder);
-
-  View * view() override;
   void didBecomeFirstResponder() override;
   int numberOfRows() const override;
   KDCoordinate rowHeight(int j) override;
@@ -20,12 +18,9 @@ public:
   int reusableCellCount(int type) override;
   int typeAtLocation(int i, int j) override;
   void willDisplayCellForIndex(HighlightCell * cell, int index) override;
-
-  const char * title() override { return I18n::translate(m_atom.name); }
-
   bool handleEvent(Ion::Events::Event event) override;
 
-  void setAtom(AtomDef atom) { m_atom = atom; }
+  void setAtom(AtomDef atom) { m_atom = atom; m_innerView.setAtom(atom); }
 
 private:
   class InnerView : public ViewController {
@@ -41,7 +36,7 @@ private:
     AtomDef m_atom;
   };
 
-  constexpr static int k_numberOfCellsWithBuffer = 2;
+  constexpr static int k_numberOfCellsWithBuffer = 1;
   MessageTableCellWithBuffer m_cellsWithBuffer[k_numberOfCellsWithBuffer];
   constexpr static int k_numberOfCellsWithExpression = 2;
   MessageTableCellWithExpression m_cellsWithExpression[k_numberOfCellsWithExpression];

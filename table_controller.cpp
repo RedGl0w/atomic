@@ -102,10 +102,9 @@ bool TableController::handleEvent(Ion::Events::Event event) {
       }
     }
   }
-  if (event == Ion::Events::OK) {
+  if (event == Ion::Events::OK || event == Ion::Events::EXE) {
     m_list.setAtom(atomsdefs[m_cursor]);
     Container::activeApp()->displayModalViewController(&m_list, 0.f, 0.f, Metric::CommonTopMargin, Metric::PopUpLeftMargin, 0, Metric::PopUpRightMargin);
-    //stackController()->push(static_cast<ViewController*>(&m_list));
     return true;
   }
   return false;

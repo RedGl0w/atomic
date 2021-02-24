@@ -113,6 +113,8 @@ bool TableController::handleEvent(Ion::Events::Event event) {
 void TableController::didBecomeFirstResponder() {
   if (selectionDataSource()->selectedRow() == -1) {
     setSelection(atomsdefs[0]);
+  } else {
+    setSelection(atomsdefs[m_cursor]);
   }
 }
 

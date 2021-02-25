@@ -168,11 +168,12 @@ void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
 Poincare::Layout ListController::Electronical::createElectronical(AtomDef atom) {
   Poincare::Layout layouts[6];
 
+  int y = (atom.y < 8) ?  atom.y : atom.y - 3;
+
   if (atom.y > 0) {
     char previousAtom[5] = {'[', ' ', ' ', ']', '\0'};
     for (AtomDef a : atomsdefs) {
       int ay = (a.y < 8) ? a.y : a.y - 3;
-      int y = (atom.y < 8) ?  atom.y : atom.y - 3;
       if (ay == y - 1 && a.x == 17) {
         memcpy(&previousAtom[1], a.symbol, 2);
       }
@@ -183,7 +184,6 @@ Poincare::Layout ListController::Electronical::createElectronical(AtomDef atom) 
   int indexAtRow = -1;
   for (AtomDef a : atomsdefs) {
     int ay = (a.y < 8) ? a.y : a.y - 3;
-    int y = (atom.y < 8) ?  atom.y : atom.y - 3;
     if (ay == y) {
       indexAtRow = atom.num - a.num + 1;
       break;
@@ -192,7 +192,7 @@ Poincare::Layout ListController::Electronical::createElectronical(AtomDef atom) 
   assert(indexAtRow != -1);
 
   int s=0, f=0, d=0, p=0;
-  Electronical::rowsSubLayers row = Electronical::rows[atom.y];
+  Electronical::rowsSubLayers row = Electronical::rows[y];
   bool sEnabled = row.s, fEnabled = row.f, dEnabled = row.d, pEnabled = row.p;
   int toOrder = indexAtRow;
   for (int i = 0; i < indexAtRow; i++) {
@@ -231,12 +231,12 @@ Poincare::Layout ListController::Electronical::createElectronical(AtomDef atom) 
     index++;
   }
 
-  Poincare::HorizontalLayout result = Poincare::HorizontalLayout::Builder({layouts[0], layouts[1]}); // FIXME The display is totally broken
+  Poincare::HorizontalLayout result = Poincare::HorizontalLayout::Builder(); // FIXME The display is totally broken
   for(int i = 0; i < 5; i++) {
     if(layouts[i].isUninitialized()) {
       break;
     }
-    //result.addOrMergeChildAtIndex(layouts[i], i, i, nullptr);
+    result.addChildAtIndex(layouts[i], i, i, nullptr);
   }
 
   return result;

@@ -180,7 +180,9 @@ Poincare::Layout ListController::Electronical::createElectronical(AtomDef atom) 
 
   int indexAtRow = -1;
   for (AtomDef a : atomsdefs) {
-    if (a.y == atom.y) {
+    int ay = (a.y < 8) ? a.y : a.y - 1;
+    int y = (atom.y < 8) ?  atom.y : atom.y - 1;
+    if (ay == y) {
       indexAtRow = atom.num - a.num + 1;
       break;
     }
@@ -208,7 +210,8 @@ Poincare::Layout ListController::Electronical::createElectronical(AtomDef atom) 
   }
   assert(toOrder == 0);
 
-  int index = (layouts[0].isUninitialized()) ? 0 : 1;
+  int index = (layouts[0].isUninitialized()) ? 0 : 1; 
+  // FIXME The 4 conditionnal blocs following are crashing with the 2 "additional" rows (Lanthanide and actinide)
   if (s != 0) {
     layouts[index] = computeLayer('s', rows->sNumber, s);
     index++;

@@ -14,15 +14,14 @@ public:
   void drawRect(KDContext * ctx, KDRect rect) const override;
   void setAtom(AtomDef atom);
 private:
-  constexpr static int k_width = 90;
+  constexpr static int k_width = 60;
   constexpr static int k_margin = 10;
   constexpr static int k_padding = 3;
-  int numberOfSubviews() const override { return 1; }
+  int numberOfSubviews() const override { return 0; }
   View * subviewAtIndex(int index) override;
   void layoutSubviews(bool force = false) override;
   KDRect m_atomRect() const;
   AtomDef m_atom;
-  MessageTextView m_name;
 };
 
 }

@@ -1,11 +1,11 @@
 #include "list_atomic_cell.h"
 #include <iostream>
 #include <poincare/integer.h>
+#include <poincare/number.h>
 
 namespace Atomic {
 
-ListAtomicCell::ListAtomicCell() :
-  m_name(KDFont::SmallFont, I18n::Message::Default, 0,0, KDColorBlack, Palette::GrayMiddle)
+ListAtomicCell::ListAtomicCell()
 {
 }
 
@@ -22,16 +22,21 @@ void ListAtomicCell::drawRect(KDContext * ctx, KDRect rect) const {
   KDPoint protonsPoint(m_atomRect().right() - KDFont::LargeFont->stringSize(protons).width() - k_padding,
     m_atomRect().top() + k_padding);
   ctx->drawString(protons, protonsPoint, KDFont::SmallFont, KDColorBlack, Palette::GrayMiddle);
+
+  KDPoint massPoint(m_atomRect().bottomLeft().x() + k_padding, m_atomRect().bottomLeft().y() - KDFont::SmallFont->glyphSize().height());
+  char mass[8];
+  Poincare::Number::FloatNumber(m_atom.mass).serialize(mass, 8);
+  ctx->drawString(mass, massPoint, KDFont::SmallFont, KDColorBlack, Palette::GrayMiddle);
+
 }
 
 View * ListAtomicCell::subviewAtIndex(int index) {
-  assert(index == 0);
-  return &m_name;
+  assert(false);
+  return nullptr;
 }
 
 void ListAtomicCell::setAtom(AtomDef atom) {
   m_atom = atom;
-  m_name.setMessage(atom.name);
 }
 
 KDRect ListAtomicCell::m_atomRect() const {
@@ -39,9 +44,6 @@ KDRect ListAtomicCell::m_atomRect() const {
 }
 
 void ListAtomicCell::layoutSubviews(bool force) {
-  KDRect nameRect(m_atomRect().bottomLeft().x() + k_padding, m_atomRect().bottomLeft().y() - KDFont::SmallFont->glyphSize().height(),
-   m_atomRect().width() - k_padding, KDFont::SmallFont->glyphSize().height());
-  m_name.setFrame(nameRect, force);
 }
 
 }

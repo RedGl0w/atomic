@@ -229,7 +229,7 @@ Poincare::Layout ListController::Electronical::createElectronical(AtomDef atom) 
     index++;
   }
 
-  Poincare::HorizontalLayout result = Poincare::HorizontalLayout::Builder();
+  Poincare::HorizontalLayout result = Poincare::HorizontalLayout::Builder(); // FIXME The display is totally broken
   for(int i = 0; i < 5; i++) {
     if(layouts[i].isUninitialized()) {
       break;

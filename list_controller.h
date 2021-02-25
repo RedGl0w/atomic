@@ -38,6 +38,25 @@ private:
     AtomDef m_atom;
   };
 
+  class Electronical {
+  public :
+    static Poincare::Layout createElectronical(AtomDef atom);
+  private:
+    static Poincare::Layout computeLayer(CodePoint c, int subLayoutNumber, int number);
+    struct rowsSubLayers {
+      bool s;
+      int sNumber;
+      bool f;
+      int fNumber;
+      bool d;
+      int dNumber;
+      bool p;
+      int pNumber;
+    };
+    const static rowsSubLayers rows[];
+    
+  };
+
   constexpr static int k_atomicCellRowHeight = 110;
   constexpr static int k_classicalRowHeight = 30;
 

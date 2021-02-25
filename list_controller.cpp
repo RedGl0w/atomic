@@ -156,27 +156,7 @@ void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
     case 7: {
       MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
       myCell->setMessage(I18n::Message::AtomNum);
-      Poincare::Layout layouts[6];
-      for(int i = 0; i < 6; i++) {
-        layouts[i] = Poincare::Layout();
-      }
-      if (m_atom.y > 0) {
-        char previousAtom[5] = {'[', ' ', ' ', ']', '\0'};
-        for (AtomDef atom : atomsdefs) {
-          if (atom.y == m_atom.y - 1 && atom.x == 17) {
-            memcpy(&previousAtom[1], atom.symbol, 2);
-          }
-        };
-        layouts[0] = Poincare::LayoutHelper::String(previousAtom, strlen(previousAtom));
-      }
-      Poincare::HorizontalLayout result = Poincare::HorizontalLayout::Builder();
-      for(int i = 0; i < 5; i++) { // FIXME It should be 6
-        if(layouts[i].isUninitialized()) {
-          break;
-        }
-        result.addChildAtIndex(layouts[i], i, i, nullptr);
-      }
-      myCell->setLayout(result);
+      myCell->setLayout(Electronical::createElectronical(m_atom));
       return;
     }
     default: {
@@ -184,5 +164,97 @@ void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
     }
   }
 }
+
+Poincare::Layout ListController::Electronical::createElectronical(AtomDef atom) {
+  Poincare::Layout layouts[5];
+
+  if (atom.y > 0) {
+    char previousAtom[5] = {'[', ' ', ' ', ']', '\0'};
+    for (AtomDef a : atomsdefs) {
+      if (a.y == atom.y - 1 && a.x == 17) {
+        memcpy(&previousAtom[1], a.symbol, 2);
+      }
+    };
+    layouts[0] = Poincare::LayoutHelper::String(previousAtom, strlen(previousAtom));
+  }
+
+  int indexAtRow = -1;
+  for (AtomDef a : atomsdefs) {
+    if (a.y == atom.y) {
+      indexAtRow = atom.num - a.num + 1;
+      break;
+    }
+  }
+  assert(indexAtRow != -1);
+
+  int s=0, f=0, d=0, p=0;
+  Electronical::rowsSubLayers row = Electronical::rows[atom.y];
+  bool sEnabled = row.s, fEnabled = row.f, dEnabled = row.d, pEnabled = row.p;
+  int toOrder = indexAtRow;
+  for (int i = 0; i < indexAtRow; i++) {
+    if (sEnabled && s < 2) {
+      s++;
+      toOrder--;
+    } else if (fEnabled && f < 14) {
+      f++;
+      toOrder--;
+    } else if (dEnabled && d < 10) {
+      d++;
+      toOrder--;
+    } else if (pEnabled && p < 6) {
+      p++;
+      toOrder--;
+    }
+  }
+  assert(toOrder == 0);
+
+  int index = (layouts[0].isUninitialized()) ? 0 : 1;
+  if (s != 0) {
+    layouts[index] = computeLayer('s', rows->sNumber, s);
+    index++;
+  }
+  if (f != 0) {
+    layouts[index] = computeLayer('f', rows->fNumber, f);
+    index++;
+  }
+  if (d != 0) {
+    layouts[index] = computeLayer('d', rows->dNumber, d);
+    index++;
+  }
+  if (p != 0) {
+    layouts[index] = computeLayer('p', rows->pNumber, p);
+    index++;
+  }
+
+  Poincare::HorizontalLayout result = Poincare::HorizontalLayout::Builder();
+  for(int i = 0; i < 5; i++) {
+    if(layouts[i].isUninitialized()) {
+      break;
+    }
+  result.addOrMergeChildAtIndex(layouts[i], i, i, nullptr);
+  }
+
+  return result;
+}
+
+Poincare::Layout ListController::Electronical::computeLayer(CodePoint c, int subLayoutNumber, int number) {
+  return Poincare::HorizontalLayout::Builder(
+      Poincare::Rational::Builder(subLayoutNumber).createLayout(Poincare::Preferences::PrintFloatMode::Decimal, 7),
+      Poincare::CodePointLayout::Builder(c),
+      Poincare::VerticalOffsetLayout::Builder(
+        Poincare::Rational::Builder(number).createLayout(Poincare::Preferences::PrintFloatMode::Decimal, 7),
+        Poincare::VerticalOffsetLayoutNode::Position::Superscript)
+    );
+}
+
+const ListController::Electronical::rowsSubLayers ListController::Electronical::rows[] = {
+  { true,  1,  false, -1,  false, -1,  false, -1 }, // 1s²
+  { true,  2,  false, -1,  false, -1,   true,  2 }, // 2s² 2p⁶
+  { true,  3,  false, -1,  false, -1,   true,  3 }, // 3s² 3p⁶
+  { true,  4,  false, -1,   true,  3,   true,  4 }, // 4s² 3d¹⁰ 4p⁶
+  { true,  5,  false, -1,   true,  4,   true,  5 }, // 5s² 4d¹⁰ 5p⁶
+  { true,  6,  true,   4,   true,  5,   true,  6 }, // 6s² 4f¹⁴ 5d¹⁰ 6p⁶
+  { true,  7,  true,   5,   true,  6,   true,  7 }, // 6s² 4f¹⁴ 5d¹⁰ 6p⁶
+};
 
 }

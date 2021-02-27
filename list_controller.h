@@ -32,7 +32,7 @@ private:
     View * view() override { return &m_selectableTableView; }
     void didBecomeFirstResponder() override;
     SelectableTableView * selectableTableView() { return &m_selectableTableView; }
-    void setAtom(AtomDef atom) { m_atom = atom; }
+    void setAtom(AtomDef atom);
   private:
     SelectableTableView m_selectableTableView;
     AtomDef m_atom;
@@ -68,6 +68,7 @@ private:
   constexpr static int k_numberOfRow = 1 + k_numberOfCellsWithBuffer + k_numberOfCellsWithExpression;
   InnerView m_innerView;
   AtomDef m_atom;
+  Responder* m_parent;
 };
 
 }

@@ -14,10 +14,10 @@ void atomInfo::drawRect(KDContext * ctx, KDRect rect) const {
   ctx->fillRect(rect, KDColorWhite);
   char protons[4];
   char nucleons[4];
-  char mass[9];
+  char mass[12];
   Poincare::Integer(m_atom.num).serialize(protons, 4);
   Poincare::Integer(m_atom.neutrons + m_atom.num).serialize(nucleons, 4);
-  Poincare::Number::FloatNumber(m_atom.mass).serialize(mass, 9, Poincare::Preferences::PrintFloatMode::Decimal, 9);
+  Poincare::Number::FloatNumber(m_atom.mass).serialize(mass, 12, Poincare::Preferences::PrintFloatMode::Decimal, 12);
   KDPoint coordonates(bounds().topLeft());
   ctx->drawString(nucleons, coordonates, KDFont::SmallFont);
   coordonates = KDPoint(coordonates.x(), coordonates.y() + 14);

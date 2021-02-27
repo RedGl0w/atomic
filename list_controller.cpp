@@ -14,6 +14,11 @@ ListController::InnerView::InnerView(ListController * dataSource) :
   m_selectableTableView.setMargins(0,0,0,0);
 }
 
+void ListController::InnerView::setAtom(AtomDef atom) {
+ m_atom = atom;
+ m_selectableTableView.reloadData(false);
+}
+
 void ListController::InnerView::didBecomeFirstResponder() {
   m_selectableTableView.reloadData();
   m_selectableTableView.selectCellAtLocation(0,1);
@@ -21,7 +26,8 @@ void ListController::InnerView::didBecomeFirstResponder() {
 
 ListController::ListController(Responder * parentResponder) :
   StackViewController(parentResponder, &m_innerView, Palette::PurpleBright, Palette::PurpleDark),
-  m_innerView(this)
+  m_innerView(this),
+  m_parent(parentResponder)
 {
   for (int i = 0; i < k_numberOfCellsWithBuffer; i++) {
     m_cellsWithBuffer[i].setMessageFont(KDFont::LargeFont);
@@ -32,6 +38,11 @@ ListController::ListController(Responder * parentResponder) :
 }
 
 bool ListController::handleEvent(Ion::Events::Event event) {
+  
+  if (event == Ion::Events::Right || event == Ion::Events::Left) {
+    return m_parent->handleEvent(event);
+  }
+  
   return false;
 }
 

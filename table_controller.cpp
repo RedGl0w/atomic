@@ -103,7 +103,6 @@ bool TableController::handleEvent(Ion::Events::Event event) {
     }
   }
   if (event == Ion::Events::OK || event == Ion::Events::EXE) {
-    m_list.setAtom(atomsdefs[m_cursor]);
     Container::activeApp()->displayModalViewController(&m_list, 0.f, 0.f, Metric::CommonTopMargin, Metric::PopUpLeftMargin, 0, Metric::PopUpRightMargin);
     return true;
   }
@@ -166,6 +165,7 @@ SelectableTableViewDataSource * TableController::selectionDataSource() const {
 void TableController::setSelection(AtomDef atom) {
   m_view.selectableTableView()->selectCellAtLocation(atom.x,atom.y,false);
   m_view.setAtom(atom);
+  m_list.setAtom(atomsdefs[m_cursor]);
 }
 
 StackViewController * TableController::stackController() const {

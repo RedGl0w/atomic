@@ -24,8 +24,9 @@ void ListAtomicCell::drawRect(KDContext * ctx, KDRect rect) const {
   ctx->drawString(protons, protonsPoint, KDFont::SmallFont, KDColorBlack, Palette::GrayMiddle);
 
   KDPoint massPoint(m_atomRect().bottomLeft().x() + k_padding, m_atomRect().bottomLeft().y() - KDFont::SmallFont->glyphSize().height());
-  char mass[8];
-  Poincare::Number::FloatNumber(m_atom.mass).serialize(mass, 8);
+  char mass[12];
+  Poincare::Number::FloatNumber(m_atom.mass).serialize(mass, 12);
+  mass[8] = 0;
   ctx->drawString(mass, massPoint, KDFont::SmallFont, KDColorBlack, Palette::GrayMiddle);
 
 }
@@ -37,6 +38,7 @@ View * ListAtomicCell::subviewAtIndex(int index) {
 
 void ListAtomicCell::setAtom(AtomDef atom) {
   m_atom = atom;
+  markRectAsDirty(bounds());
 }
 
 KDRect ListAtomicCell::m_atomRect() const {

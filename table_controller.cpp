@@ -1,6 +1,7 @@
 #include "table_controller.h"
 #include "app.h"
 #include "../apps_container.h"
+#include <escher/palette.h>
 
 extern "C" {
 #include <assert.h>
@@ -13,7 +14,7 @@ TableController::ContentView::ContentView(TableController * controller, Selectab
 {
   m_selectableTableView.setVerticalCellOverlap(0);
   m_selectableTableView.setMargins(k_sideMargin, k_sideMargin, k_sideMargin, k_sideMargin);
-  m_selectableTableView.setBackgroundColor(KDColorWhite);
+  m_selectableTableView.setBackgroundColor(Palette::BackgroundApps);
 }
 
 SelectableTableView * TableController::ContentView::selectableTableView() {
@@ -21,7 +22,7 @@ SelectableTableView * TableController::ContentView::selectableTableView() {
 }
 
 void TableController::ContentView::drawRect(KDContext * ctx, KDRect rect) const {
-  ctx->fillRect(bounds(), KDColorWhite);
+  ctx->fillRect(bounds(), Palette::BackgroundApps);
 }
 
 int TableController::ContentView::numberOfSubviews() const {

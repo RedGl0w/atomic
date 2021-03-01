@@ -3,7 +3,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron : "0 0 * * 1" #Run every mondays, to check if epsilon hasn't changed to much
+    - cron : "0 0 * * 1" #Run every mondays, to check if Omega hasn't changed to much
 
 jobs:
   linux:
@@ -11,10 +11,10 @@ jobs:
     steps:
       - name: Install deps
         run: sudo apt-get install build-essential imagemagick libfreetype6-dev libjpeg-dev libpng-dev pkg-config
-      - name: Checkout epsilon
+      - name: Checkout Omega
         uses: actions/checkout@v2
         with:
-          repository: 'numworks/epsilon'
+          repository: 'Omega-Numworks/Omega'
           ref: 'master'
       - name: Patch apps_layout
         run: |

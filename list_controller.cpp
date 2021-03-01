@@ -166,7 +166,7 @@ void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
     }
     case 7: {
       MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
-      myCell->setMessage(I18n::Message::AtomNum);
+      myCell->setMessage(I18n::Message::AtomEC);
       myCell->setLayout(Electronical::createElectronical(m_atom));
       return;
     }

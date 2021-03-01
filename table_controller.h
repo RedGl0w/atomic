@@ -56,7 +56,7 @@ private:
   int m_position;
   ContentView m_view;
   AtomicCell m_cells[k_maxNumberOfCells];
-  int m_cursor;
+  int m_cursor = 0;
   ListController m_list;
 };
 

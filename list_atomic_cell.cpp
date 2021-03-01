@@ -1,5 +1,4 @@
 #include "list_atomic_cell.h"
-#include <iostream>
 #include <poincare/integer.h>
 #include <poincare/number.h>
 

@@ -120,6 +120,13 @@ int ListController::typeAtLocation(int i, int j) {
   }
 }
 
+void ListController::setAtom(AtomDef atom) {
+  m_atom = atom; 
+  m_innerView.setAtom(atom); 
+  m_cellsWithExpression[0].setHighlighted(false); 
+  m_cellsWithExpression[1].setHighlighted(false); // FIXME This fix is ugly (just supposing that there's the 2 first cellsWithExpression that can be seen when scrolling on 1st cell)
+}
+
 void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
   switch (index) {
     case 0 : {

@@ -20,7 +20,7 @@ public:
   void willDisplayCellForIndex(HighlightCell * cell, int index) override;
   bool handleEvent(Ion::Events::Event event) override;
 
-  void setAtom(AtomDef atom) { m_atom = atom; m_innerView.setAtom(atom); }
+  void setAtom(AtomDef atom);
 
   void tableViewDidChangeSelection(SelectableTableView * t, int previousSelectedCellX, int previousSelectedCellY, bool withinTemporarySelection) override;
 

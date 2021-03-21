@@ -53,7 +53,19 @@ private:
       bool p;
       int pNumber;
     };
+    struct exceptionStruct {
+      int num;
+      bool s;
+      int sContent;
+      bool f;
+      int fContent;
+      bool d;
+      int dContent;
+      bool p;
+      int pContent;
+    };
     const static rowsSubLayers rows[];
+    const static exceptionStruct exceptions[18];
     
   };
 

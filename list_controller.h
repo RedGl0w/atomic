@@ -5,6 +5,7 @@
 #include <apps/i18n.h>
 #include "atoms.h"
 #include "list_atomic_cell.h"
+#include "message_table_cell_with_expression_with_copy.h"
 
 namespace Atomic {
 
@@ -76,7 +77,7 @@ private:
   constexpr static int k_numberOfCellsWithBuffer = 2;
   MessageTableCellWithBuffer m_cellsWithBuffer[k_numberOfCellsWithBuffer];
   constexpr static int k_numberOfCellsWithExpression = 5;
-  MessageTableCellWithExpression m_cellsWithExpression[k_numberOfCellsWithExpression];
+  MessageTableCellWithExpressionWithCopy m_cellsWithExpression[k_numberOfCellsWithExpression];
   constexpr static int k_numberOfRow = 1 + k_numberOfCellsWithBuffer + k_numberOfCellsWithExpression;
   InnerView m_innerView;
   AtomDef m_atom;

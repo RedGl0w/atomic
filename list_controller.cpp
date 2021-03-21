@@ -141,15 +141,15 @@ void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
       return;
     }
     case 2: {
-      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      MessageTableCellWithExpressionWithCopy * myCell = (MessageTableCellWithExpressionWithCopy *)cell;
       myCell->setMessage(I18n::Message::AtomNum);
-      myCell->setLayout(Poincare::Integer(m_atom.num).createLayout());
+      myCell->setLayoutWithCopy(Poincare::Integer(m_atom.num).createLayout());
       return;
     }
     case 3: {
-      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      MessageTableCellWithExpressionWithCopy * myCell = (MessageTableCellWithExpressionWithCopy *)cell;
       myCell->setMessage(I18n::Message::AtomNeutrons);
-      myCell->setLayout(Poincare::Integer(m_atom.neutrons).createLayout());
+      myCell->setLayoutWithCopy(Poincare::Integer(m_atom.neutrons).createLayout());
       return;
     }
     case 4: {
@@ -160,21 +160,21 @@ void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
       return;
     }
     case 5: {
-      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      MessageTableCellWithExpressionWithCopy * myCell = (MessageTableCellWithExpressionWithCopy *)cell;
       myCell->setMessage(I18n::Message::AtomMass);
-      myCell->setLayout(Poincare::FloatNode<double>(m_atom.mass).createLayout(Poincare::Preferences::PrintFloatMode::Decimal, 7));
+      myCell->setLayoutWithCopy(Poincare::FloatNode<double>(m_atom.mass).createLayout(Poincare::Preferences::PrintFloatMode::Decimal, 7));
       return;
     }
     case 6: {
-      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      MessageTableCellWithExpressionWithCopy * myCell = (MessageTableCellWithExpressionWithCopy *)cell;
       myCell->setMessage(I18n::Message::AtomElectroneg);
-      myCell->setLayout(Poincare::FloatNode<double>(m_atom.electroneg).createLayout(Poincare::Preferences::PrintFloatMode::Decimal, 5));
+      myCell->setLayoutWithCopy(Poincare::FloatNode<double>(m_atom.electroneg).createLayout(Poincare::Preferences::PrintFloatMode::Decimal, 5));
       return;
     }
     case 7: {
-      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      MessageTableCellWithExpressionWithCopy * myCell = (MessageTableCellWithExpressionWithCopy *)cell;
       myCell->setMessage(I18n::Message::AtomEC);
-      myCell->setLayout(Electronical::createElectronical(m_atom));
+      myCell->setLayoutWithCopy(Electronical::createElectronical(m_atom));
       return;
     }
     default: {

@@ -5,6 +5,7 @@
 #include <apps/i18n.h>
 #include "atoms.h"
 #include "list_atomic_cell.h"
+#include "message_table_cell_with_expression_with_copy.h"
 
 namespace Atomic {
 
@@ -20,7 +21,7 @@ public:
   void willDisplayCellForIndex(HighlightCell * cell, int index) override;
   bool handleEvent(Ion::Events::Event event) override;
 
-  void setAtom(AtomDef atom) { m_atom = atom; m_innerView.setAtom(atom); }
+  void setAtom(AtomDef atom);
 
   void tableViewDidChangeSelection(SelectableTableView * t, int previousSelectedCellX, int previousSelectedCellY, bool withinTemporarySelection) override;
 
@@ -53,7 +54,19 @@ private:
       bool p;
       int pNumber;
     };
+    struct exceptionStruct {
+      int num;
+      bool s;
+      int sContent;
+      bool f;
+      int fContent;
+      bool d;
+      int dContent;
+      bool p;
+      int pContent;
+    };
     const static rowsSubLayers rows[];
+    const static exceptionStruct exceptions[18];
     
   };
 
@@ -64,7 +77,7 @@ private:
   constexpr static int k_numberOfCellsWithBuffer = 2;
   MessageTableCellWithBuffer m_cellsWithBuffer[k_numberOfCellsWithBuffer];
   constexpr static int k_numberOfCellsWithExpression = 5;
-  MessageTableCellWithExpression m_cellsWithExpression[k_numberOfCellsWithExpression];
+  MessageTableCellWithExpressionWithCopy m_cellsWithExpression[k_numberOfCellsWithExpression];
   constexpr static int k_numberOfRow = 1 + k_numberOfCellsWithBuffer + k_numberOfCellsWithExpression;
   InnerView m_innerView;
   AtomDef m_atom;

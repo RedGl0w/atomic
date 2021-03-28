@@ -120,6 +120,13 @@ int ListController::typeAtLocation(int i, int j) {
   }
 }
 
+void ListController::setAtom(AtomDef atom) {
+  m_atom = atom; 
+  m_innerView.setAtom(atom); 
+  m_cellsWithExpression[0].setHighlighted(false); 
+  m_cellsWithExpression[1].setHighlighted(false); // FIXME This fix is ugly (just supposing that there's the 2 first cellsWithExpression that can be seen when scrolling on 1st cell)
+}
+
 void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
   switch (index) {
     case 0 : {
@@ -134,15 +141,15 @@ void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
       return;
     }
     case 2: {
-      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      MessageTableCellWithExpressionWithCopy * myCell = (MessageTableCellWithExpressionWithCopy *)cell;
       myCell->setMessage(I18n::Message::AtomNum);
-      myCell->setLayout(Poincare::Integer(m_atom.num).createLayout());
+      myCell->setLayoutWithCopy(Poincare::Integer(m_atom.num).createLayout());
       return;
     }
     case 3: {
-      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      MessageTableCellWithExpressionWithCopy * myCell = (MessageTableCellWithExpressionWithCopy *)cell;
       myCell->setMessage(I18n::Message::AtomNeutrons);
-      myCell->setLayout(Poincare::Integer(m_atom.neutrons).createLayout());
+      myCell->setLayoutWithCopy(Poincare::Integer(m_atom.neutrons).createLayout());
       return;
     }
     case 4: {
@@ -153,21 +160,21 @@ void ListController::willDisplayCellForIndex(HighlightCell * cell, int index) {
       return;
     }
     case 5: {
-      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      MessageTableCellWithExpressionWithCopy * myCell = (MessageTableCellWithExpressionWithCopy *)cell;
       myCell->setMessage(I18n::Message::AtomMass);
-      myCell->setLayout(Poincare::FloatNode<double>(m_atom.mass).createLayout(Poincare::Preferences::PrintFloatMode::Decimal, 7));
+      myCell->setLayoutWithCopy(Poincare::FloatNode<double>(m_atom.mass).createLayout(Poincare::Preferences::PrintFloatMode::Decimal, 7));
       return;
     }
     case 6: {
-      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      MessageTableCellWithExpressionWithCopy * myCell = (MessageTableCellWithExpressionWithCopy *)cell;
       myCell->setMessage(I18n::Message::AtomElectroneg);
-      myCell->setLayout(Poincare::FloatNode<double>(m_atom.electroneg).createLayout(Poincare::Preferences::PrintFloatMode::Decimal, 5));
+      myCell->setLayoutWithCopy(Poincare::FloatNode<double>(m_atom.electroneg).createLayout(Poincare::Preferences::PrintFloatMode::Decimal, 5));
       return;
     }
     case 7: {
-      MessageTableCellWithExpression * myCell = (MessageTableCellWithExpression *)cell;
+      MessageTableCellWithExpressionWithCopy * myCell = (MessageTableCellWithExpressionWithCopy *)cell;
       myCell->setMessage(I18n::Message::AtomEC);
-      myCell->setLayout(Electronical::createElectronical(m_atom));
+      myCell->setLayoutWithCopy(Electronical::createElectronical(m_atom));
       return;
     }
     default: {
@@ -192,36 +199,55 @@ Poincare::Layout ListController::Electronical::createElectronical(AtomDef atom) 
     layouts[0] = Poincare::LayoutHelper::String(previousAtom, strlen(previousAtom));
   }
 
-  int indexAtRow = -1;
-  for (AtomDef a : atomsdefs) {
-    int ay = (a.y < 8) ? a.y : a.y - 3;
-    if (ay == y) {
-      indexAtRow = atom.num - a.num + 1;
-      break;
+  bool isException = false;
+  exceptionStruct exceptionContent = Electronical::exceptions[0]; //We initialize it with random value to silence compilator warning (-Wmaybe-uninitialized)
+  for(exceptionStruct e : exceptions) {
+    if (e.num == atom.num) {
+      isException = true;
+      exceptionContent = e;
     }
   }
-  assert(indexAtRow != -1);
+
+  int indexAtRow = -1;
+  if (!isException) {
+    for (AtomDef a : atomsdefs) {
+      int ay = (a.y < 8) ? a.y : a.y - 3;
+      if (ay == y) {
+        indexAtRow = atom.num - a.num + 1;
+        break;
+      }
+    }
+    assert(indexAtRow != -1);
+  }
 
   int s=0, f=0, d=0, p=0;
   Electronical::rowsSubLayers row = Electronical::rows[y];
-  bool sEnabled = row.s, fEnabled = row.f, dEnabled = row.d, pEnabled = row.p;
-  int toOrder = indexAtRow;
-  for (int i = 0; i < indexAtRow; i++) {
-    if (sEnabled && s < 2) {
-      s++;
-      toOrder--;
-    } else if (fEnabled && f < 14) {
-      f++;
-      toOrder--;
-    } else if (dEnabled && d < 10) {
-      d++;
-      toOrder--;
-    } else if (pEnabled && p < 6) {
-      p++;
-      toOrder--;
+
+  if (!isException) {
+    bool sEnabled = row.s, fEnabled = row.f, dEnabled = row.d, pEnabled = row.p;
+    int toOrder = indexAtRow;
+    for (int i = 0; i < indexAtRow; i++) {
+      if (sEnabled && s < 2) {
+        s++;
+        toOrder--;
+      } else if (fEnabled && f < 14) {
+        f++;
+        toOrder--;
+      } else if (dEnabled && d < 10) {
+        d++;
+        toOrder--;
+      } else if (pEnabled && p < 6) {
+        p++;
+        toOrder--;
+      }
     }
+    assert(toOrder == 0);
+  } else {
+    s = exceptionContent.s ? (exceptionContent.sContent) : 0;
+    f = exceptionContent.f ? (exceptionContent.fContent) : 0;
+    d = exceptionContent.d ? (exceptionContent.dContent) : 0;
+    p = exceptionContent.p ? (exceptionContent.pContent) : 0;
   }
-  assert(toOrder == 0);
 
   int index = (layouts[0].isUninitialized()) ? 0 : 1; 
   // FIXME The 4 conditionnal blocs following are crashing with the 2 "additional" rows (Lanthanide and actinide)
@@ -272,5 +298,31 @@ const ListController::Electronical::rowsSubLayers ListController::Electronical::
   { true,  6,  true,   4,   true,  5,   true,  6 }, // 6s² 4f¹⁴ 5d¹⁰ 6p⁶
   { true,  7,  true,   5,   true,  6,   true,  7 }, // 6s² 4f¹⁴ 5d¹⁰ 6p⁶
 };
+
+const ListController::Electronical::exceptionStruct ListController::Electronical::exceptions[18] = {
+  {  24,  true,   1, false, -1,  true,  5, false, -1},
+  {  29,  true,   1, false, -1,  true, 10, false, -1},
+
+  {  41,  true,   1, false, -1,  true,  4, false, -1},
+  {  42,  true,   1, false, -1,  true,  5, false, -1},
+  {  44,  true,   1, false, -1,  true,  7, false, -1},
+  {  45,  true,   1, false, -1,  true,  8, false, -1},
+  {  46, false,  -1, false, -1, false, -1, false, -1},
+  {  47,  true,   1, false, -1,  true, 10, false, -1},
+
+  {  57,  true,   2, false, -1,  true,  1, false, -1},
+  {  58,  true,   2,  true,  1,  true,  1, false, -1},
+  {  78,  true,   1,  true, 14,  true, 19, false, -1},
+
+  {  89,  true,   2, false, -1,  true,  1, false, -1},
+  {  90,  true,   2, false, -1,  true,  2, false, -1},
+  {  91,  true,   2,  true,  2,  true,  1, false, -1},
+  {  92,  true,   2,  true,  3,  true,  1, false, -1},
+  {  93,  true,   2,  true,  4,  true,  1, false, -1},
+  {  96,  true,   2,  true,  7,  true,  1, false, -1},
+  { 103,  true,   2,  true, 14, false, -1,  true,  1},
+};
+
+
 
 }

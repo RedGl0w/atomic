@@ -106,8 +106,16 @@ void ListController::tableViewDidChangeSelection(SelectableTableView * t, int pr
 }
 
 int ListController::reusableCellCount(int type) {
-  assert(type == 0);
-  return k_numberOfRow;
+  switch(type) {
+    case 0:
+      return 1;
+    case 1:
+      return k_numberOfCellsWithBuffer;
+    case 2:
+      return k_numberOfCellsWithExpression;
+    default:
+      assert(false);
+  }
 }
 
 int ListController::typeAtLocation(int i, int j) {

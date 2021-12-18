@@ -2,6 +2,8 @@
 #include "app.h"
 #include "../apps_container.h"
 
+#include <iostream>
+
 extern "C" {
 #include <assert.h>
 }
@@ -102,9 +104,18 @@ bool TableController::handleEvent(Ion::Events::Event event) {
       }
     }
   }
+
   if (event == Ion::Events::OK || event == Ion::Events::EXE) {
     Container::activeApp()->displayModalViewController(&m_list, 0.f, 0.f, Metric::CommonTopMargin, Metric::PopUpLeftMargin, 0, Metric::PopUpRightMargin);
     return true;
+  }
+
+  if (event == Ion::Events::Toolbox) {
+    /* TODO : Open a tools ModalViewController */
+  }
+
+  if (event.hasText()) {
+    /* TODO : Open a goto ModalViewController */
   }
   return false;
 }

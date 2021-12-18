@@ -126,6 +126,7 @@ int ListController::typeAtLocation(int i, int j) {
   } else {
     return 2;
   }
+  /* TODO : Add a representation of electronic configuration additionaly to the string */
 }
 
 void ListController::setAtom(AtomDef atom) {
